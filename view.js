@@ -6,8 +6,32 @@ class ViewCase {
     this.row = row;
     this.col = col;
     this.el = document.createElement("div");
-    this.el.className = "case-bg";
-    this.el.appendChild(document.createElement('div'));
+    this.el.className = "case";
+    var self = this;
+    this.el.addEventListener('click', function(event) {
+      self.board.handle_click(self.row, self.col);
+    });
+    this.el.style.width = (CASE_SIZE - 2) + "px";
+    this.el.style.height = (CASE_SIZE - 2) + "px";
+    this.el.style.top = (CASE_SIZE * this.row) + "px";
+    this.el.style.left = (CASE_SIZE * this.col) + "px";
+  }
+
+  update(model) {
+    switch (model[this.row][this.col]) {
+      case 0:
+        this.el.innerHTML = "";
+        this.el.className = "case";
+        break;
+      case 1:
+        this.el.innerHTML = "•";
+        this.el.className = "case miss";
+        break;
+      case 2:
+        this.el.innerHTML = "•";
+        this.el.className = "case hit";
+        break;
+    }
   }
 
 }
@@ -51,21 +75,21 @@ class ViewShip {
   }
 
   model() {
-    return this.view.controller.model.ships_self[this.index];
+    return this.view.controller.model.ships[this.index];
   }
 
   update() {
     var model = this.model();
     if (model.dir === 1) {
-      this.sub_div.style.width = (CASE_SIZE - 2) + "px";
-      this.sub_div.style.height = (model.size * CASE_SIZE - 2) + "px";
-      this.el.style.width = CASE_SIZE + "px";
-      this.el.style.height = (model.size * CASE_SIZE) + "px";
+      /*this.sub_div.style.width = (CASE_SIZE - 2) + "px";
+      this.sub_div.style.height = (model.size * CASE_SIZE - 2) + "px";*/
+      this.el.style.width = (CASE_SIZE - 2) + "px";
+      this.el.style.height = (model.size * CASE_SIZE - 2) + "px";
     } else {
-      this.sub_div.style.width = (model.size * CASE_SIZE - 2) + "px";
-      this.sub_div.style.height = (CASE_SIZE - 2) + "px";
-      this.el.style.width = (model.size * CASE_SIZE) + "px";
-      this.el.style.height = CASE_SIZE + "px";
+      /*this.sub_div.style.width = (model.size * CASE_SIZE - 2) + "px";
+      this.sub_div.style.height = (CASE_SIZE - 2) + "px";*/
+      this.el.style.width = (model.size * CASE_SIZE - 2) + "px";
+      this.el.style.height = (CASE_SIZE - 2) + "px";
     }
     this.el.style.top = (model.row * CASE_SIZE) + "px";
     this.el.style.left = (model.col * CASE_SIZE) + "px";
@@ -74,8 +98,9 @@ class ViewShip {
 
 
 class ViewBoard {
-  constructor(view) {
+  constructor(view, type) {
     this.view = view;
+    this.type = type;
     this.init();
   }
 
@@ -86,7 +111,17 @@ class ViewBoard {
         this.cases.push(new ViewCase(this, row, col));
       }
     }
-    this.el = this.view.create_blank_grid();
+    this.el = document.createElement('div');
+    this.el.className = "board";
+    for (var c = 0; c < this.cases.length; c++) {
+	    this.el.appendChild(this.cases[c].el);
+    }
+    this.el.addEventListener("dragover", function(event) {
+      event.preventDefault();
+    });
+    this.el.addEventListener("dragenter", function(event) {
+      event.preventDefault();
+    });
   }
 
   getCol(event) {
@@ -97,8 +132,20 @@ class ViewBoard {
     return Math.floor((event.pageY - this.el.offsetTop) / CASE_SIZE);
   }
 
-  update() {
+  handle_click(row, col) {
+    if (this.type === 1) {
+      this.view.controller.handle_click(row, col);
+    }
+  }
 
+  update() {
+    for (var c = 0; c < this.cases.length; c++) {
+      if (this.type === 0) {
+        this.cases[c].update(this.view.controller.model.grid_self);
+      } else if (this.type === 1) {
+        this.cases[c].update(this.view.controller.model.grid_other);
+      }
+    }
   }
 
 }
@@ -116,10 +163,11 @@ class View {
     this.width = dimensions[0];
     this.height = dimensions[1];
     this.container.innerHTML = "";
-    this.board_self = new ViewBoard(this);
-    this.board_other = new ViewBoard(this);
+    this.board_self = new ViewBoard(this, 0);
+    this.board_other = new ViewBoard(this, 1);
+
     this.ships = [];
-    for (var s = 0; s < this.controller.model.ships_self.length; s++) {
+    for (var s = 0; s < this.controller.model.ships.length; s++) {
       this.ships.push(new ViewShip(this, s));
     }
 
@@ -134,35 +182,24 @@ class View {
 
   update() {
     console.log("Updating view");
-    if (!this.began) {
+    /* if (!this.began) {
       this.update_pregame();
-    } else  {
+    } else {
       this.update_game();
-    }
-  }
-
-  create_blank_grid() {
-    var board = document.createElement('div');
-    board.className = "board";
-    for (var row = 0; row < this.height; row++) {
-      for (var col = 0; col < this.width; col ++) {
-        var view_case = new ViewCase(this, row, col);
-	      board.appendChild(view_case.el);
-      }
-    }
-    board.addEventListener("dragover", function(event) {
-      event.preventDefault();
-    });
-    board.addEventListener("dragenter", function(event) {
-      event.preventDefault();
-    });
-    return board;
+    } */
+    this.update_pregame();
+    this.update_game();
   }
 
   update_pregame() {
     for (var s = 0; s < this.ships.length; s++) {
       this.ships[s].update();
     }
+  }
+
+  update_game() {
+    this.board_self.update();
+    this.board_other.update();
   }
 
   start_moving(ship) {
