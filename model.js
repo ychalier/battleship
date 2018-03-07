@@ -187,8 +187,6 @@ class Model {
   }
 
   move_ship(index, row, col, dir) {
-    console.log("Trying to move ship " + index + " to (" + row + ", " + col
-                + ", " + dir + ")");
     if (this.began) {
       console.log("Warning: attempting to move a ship after game start!");
       return;
@@ -203,7 +201,6 @@ class Model {
       return true;
     } else {
       this.ships_self.splice(index, 0, old_ship);
-      console.log("Failed to move the ship " + index);
       return false;
     }
   }

@@ -12,4 +12,4 @@ class Controller {
 }
 
 var controller = new Controller();
-controller.init([10, 10], SHIPS_SETTINGS_BASIC);
+controller.init([10, 10], SHIPS_SETTINGS_VARIANT);

@@ -40,6 +40,14 @@ class ViewShip {
         }
       }
     });
+    this.el.addEventListener("click", function(event) {
+      var model = self.model();
+      var success = self.view.controller.model.move_ship(
+        self.index, model.row, model.col, 1 - model.dir);
+      if (success) {
+        self.view.update();
+      }
+    });
   }
 
   model() {
@@ -120,6 +128,7 @@ class View {
       this.board_self.el.appendChild(this.ships[s].el);
     }
     this.container.appendChild(this.board_self.el);
+    this.container.appendChild(this.board_other.el);
 
   }
 
