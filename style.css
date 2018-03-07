@@ -18,16 +18,47 @@ footer {
 }
 
 .board {
+  position: relative;
   padding: 0;
   margin: 0;
-  vertical-align: top;
+  width: 300px;
+  height: 300px;
+  margin: auto;
+  border: 1px solid grey;
 }
 
 .case-bg {
   display: inline-block;
+  vertical-align: top;
+  margin: 0;
   padding: 0;
+  width: 30px;
+  height: 30px;
+  background: lightgrey;
+}
+
+.case-bg > div {
+  position: relative;
+  top: 1px;
+  left: 1px;
   width: 28px;
   height: 28px;
-  line-height: 28px;
-  border: 1px solid grey;
+  background-color: white;
+}
+
+.ship {
+  position: absolute;
+  background-color: darkblue;
+  transition: .1s linear;
+}
+
+.ship:active {
+  background-color: crimson;
+}
+
+.ship > div {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  background-color: white;
 }
