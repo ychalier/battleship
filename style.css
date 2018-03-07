@@ -17,12 +17,42 @@ footer {
   margin-top: 20px;
 }
 
-#game-panel {
+input {
+  margin: 0;
+  padding: 4px;
+  width: 100px;
+  font-size: 100%;
+  vertical-align: top;
+  display: inline-block;
+  border-radius: 4px 0 0 4px;
+  border: 1px solid darkblue;
+}
+
+button {
+  margin: 0;
+  left: -4px;
+  padding: 4px;
+  color: white;
+  font-size: 100%;
+  cursor: pointer;
+  position: relative;
+  vertical-align: top;
+  display: inline-block;
+  border: 1px solid darkblue;
+  background-color: darkblue;
+  border-radius: 0 4px 4px 0;
+}
+
+#cmd-panel, #game-panel {
   margin: auto;
   display: flex;
   max-width: 700px;
   flex-direction: row;
   justify-content: space-around;
+}
+
+#cmd-panel {
+  margin-bottom: 20px;
 }
 
 .board {
