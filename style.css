@@ -16,3 +16,18 @@ a:visited {
 footer {
   margin-top: 20px;
 }
+
+.board {
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
+}
+
+.case-bg {
+  display: inline-block;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  border: 1px solid grey;
+}
