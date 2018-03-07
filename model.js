@@ -109,6 +109,9 @@ class Model {
       var overlap = false;
       for (var p = 0; p < this.ships_self.length; p++) {
         overlap = overlap || ship.overlap(this.ships_self[p]);
+        if (overlap) {
+          break;
+        }
       }
       if (!overlap) {
         add = true;

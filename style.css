@@ -49,7 +49,7 @@ footer {
 .ship {
   position: absolute;
   background-color: darkblue;
-  transition: .1s linear;
+  transition: .2s ease;
 }
 
 .ship:active {
