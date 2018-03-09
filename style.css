@@ -55,6 +55,25 @@ button {
   margin-bottom: 20px;
 }
 
+#sub-cmd-panel {
+  margin-top: 20px;
+}
+
+#btn-start {
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-block;
+  transition: .1s linear;
+  background-color: crimson;
+  padding: 8px 20px 8px 20px;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+}
+
+#btn-start:hover {
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
+}
+
 .board {
   padding: 0;
   width: 300px;

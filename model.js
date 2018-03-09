@@ -136,6 +136,10 @@ class Model {
     this.init_ships();
   }
 
+  start() {
+    this.began = true;
+  }
+
   is_outside(row, col) {
     return row < 0 || col < 0 || row >= this.height || col >= this.width;
   }
@@ -225,8 +229,7 @@ class Model {
 
   move_ship(index, row, col, dir) {
     if (this.began) {
-      console.log("Warning: attempting to move a ship after game start!");
-      return;
+      return false;
     }
     var old_ship = this.ships[index];
     this.ships.splice(index, 1);

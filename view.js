@@ -81,13 +81,9 @@ class ViewShip {
   update() {
     var model = this.model();
     if (model.dir === 1) {
-      /*this.sub_div.style.width = (CASE_SIZE - 2) + "px";
-      this.sub_div.style.height = (model.size * CASE_SIZE - 2) + "px";*/
       this.el.style.width = (CASE_SIZE - 2) + "px";
       this.el.style.height = (model.size * CASE_SIZE - 2) + "px";
     } else {
-      /*this.sub_div.style.width = (model.size * CASE_SIZE - 2) + "px";
-      this.sub_div.style.height = (CASE_SIZE - 2) + "px";*/
       this.el.style.width = (model.size * CASE_SIZE - 2) + "px";
       this.el.style.height = (CASE_SIZE - 2) + "px";
     }
@@ -180,15 +176,17 @@ class View {
 
   }
 
+  start() {
+    this.began = true;
+  }
+
   update() {
     console.log("Updating view");
-    /* if (!this.began) {
+    if (!this.began) {
       this.update_pregame();
     } else {
       this.update_game();
-    } */
-    this.update_pregame();
-    this.update_game();
+    }
   }
 
   update_pregame() {

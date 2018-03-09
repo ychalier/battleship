@@ -9,24 +9,40 @@ class Controller {
     console.log("Initializing controller");
     this.model.init(dimensions, ships_settings);
     this.view.init(dimensions);
+    this.began = false;
+  }
+
+  start() {
+    if (this.radio.opened_connection) {
+      document.getElementById("btn-start").style.display = "none";
+      this.model.start();
+      this.view.start();
+      this.began = true;
+    } else {
+      alert("Setup the connection with your friend first!");
+    }
   }
 
   handle_click(row, col) {
-    if (!this.model.can_shoot(row, col))
+    if (!this.began || !this.model.can_shoot(row, col))
       return false;
     this.radio.shoot(row, col);
     return true;
   }
 
   handle_shot(rowCol) {
-    var success = this.model.handle_shot(rowCol.row, rowCol.col);
-    this.radio.answer(rowCol.row, rowCol.col, success);
-    this.view.update();
+    if (this.began) {
+      var success = this.model.handle_shot(rowCol.row, rowCol.col);
+      this.radio.answer(rowCol.row, rowCol.col, success);
+      this.view.update();
+    }
   }
 
   handle_shot_results(out) {
-    this.model.send_shot_results(out.row, out.col, out.success);
-    this.view.update();
+    if (this.began) {
+      this.model.send_shot_results(out.row, out.col, out.success);
+      this.view.update();
+    }
   }
 }
 
@@ -49,4 +65,8 @@ document.getElementById("btn-otherid").addEventListener('click', function(e) {
   } else {
     alert('You must set your own id before doing that!');
   }
+});
+
+document.getElementById("btn-start").addEventListener('click', function(e) {
+  controller.start();
 });
