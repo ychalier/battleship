@@ -1,50 +1,116 @@
 var API_KEY = "hnrdj02nxhto6r";
 
 class Radio {
-  constructor(id) {
+  constructor(controller) {
+    this.controller = controller;
+    this.peer_created = false;
+    this.opened_connection = false;
+  }
+
+  init(id) {
     this.self = id;
     this.peer = new Peer(id, {key: API_KEY});
-    // this.conn = null;
     this.opened_connection = false;
-
+    var radio = this;
     this.peer.on('connection', function(conn) {
       conn.on('data', function(data){
-        console.log(data);
+        radio.handle(data);
       });
     });
+    this.peer_created = true;
     console.log("Initializing peer with id '" + id + "'");
   }
 
   connect(id) {
     this.other = id;
-    this.conn = this.peer.connect(id);
+    var conn = this.peer.connect(id);
     var self = this;
-    console.log("Opening connection with id '" + id + "'...");
-    this.conn.on('open', function() {
-      // self.conn.send('hi');
-      console.log("Connection opened!");
+    conn.on('open', function() {
+      conn.send("HELO " + self.self);
       self.opened_connection = true;
+      console.log("Connection opened!");
+    });
+    console.log("Opening connection with id '" + id + "'...");
+  }
+
+  send(message) {
+    console.log("Sending message:\t" + message);
+    var conn = this.peer.connect(this.other);
+    conn.on('open', function() {
+      conn.send(message);
     });
   }
 
-}
-
-var radio = null;
-
-document.getElementById("btn-selfid").addEventListener('click', function(e) {
-  if (document.getElementById("input-selfid").value != "") {
-    document.getElementById("input-selfid").disabled = true;
-    radio = new Radio(document.getElementById("input-selfid").value);
+  ready() {
+    return this.peer_created;
   }
-});
 
-document.getElementById("btn-otherid").addEventListener('click', function(e) {
-  if (radio) {
-    if (document.getElementById("input-otherid").value != "") {
-      document.getElementById("input-otherid").disabled = true;
-      radio.connect(document.getElementById("input-otherid").value);
+  shoot(row, col) {
+    var message = "SHOT " + this.self + " " + row + " " + col;
+    this.send(message);
+  }
+
+  answer(row, col, results) {
+    var message = "RESU " + this.self + " " + row + " " + col + " ";
+    if (results.success) {
+      message += "1 ";
+      if (results.sink) {
+        message += "1 ";
+        message += results.size + " " + results.row + " " + results.col + " "
+                 + results.dir;
+      } else {
+        message += "0";
+      }
+
+    } else {
+      message += "0";
     }
-  } else {
-    alert('You must set your own id before doing that!');
+    this.send(message);
   }
-});
+
+  read_shot(data) {
+    var out = {};
+    out.row = parseInt(data.split(" ")[2]);
+    out.col = parseInt(data.split(" ")[3]);
+    return out;
+  }
+
+  read_answer(data) {
+    var out = {};
+    var sub = {};
+    var split = data.split(" ");
+    out.row = parseInt(split[2]);
+    out.col = parseInt(split[3]);
+    sub.success = split[4] === "1";
+    if (sub.success) {
+      sub.sink = split[5] === "1";
+      sub.size = parseInt(split[6]);
+      sub.row = parseInt(split[7]);
+      sub.col = parseInt(split[8]);
+      sub.dir = parseInt(split[9]);
+    }
+    out.success = sub;
+    return out;
+  }
+
+  handle(data) {
+    var split = data.split(" ");
+    switch (split[0]) {
+      case "HELO":
+        console.log("Connected to " + split[1]);
+        break;
+      case "SHOT":
+        this.controller.handle_shot(this.read_shot(data));
+        break;
+      case "RESU":
+        this.controller.handle_shot_results(this.read_answer(data));
+        break;
+      default:
+        console.log("-----BEGIN RECEIVED DATA-----\n"
+                  + data
+                  + "\n-----END RECEIVED DATA-----");
+
+    }
+  }
+
+}
