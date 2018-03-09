@@ -5,6 +5,8 @@ class Radio {
     this.controller = controller;
     this.peer_created = false;
     this.opened_connection = false;
+    this.other_is_connected = false;
+    this.self_connected_first = false;
   }
 
   init(id) {
@@ -28,13 +30,15 @@ class Radio {
     conn.on('open', function() {
       conn.send("HELO " + self.self);
       self.opened_connection = true;
+      if (!self.other_is_connected) {
+        self.self_connected_first = true;
+      }
       console.log("Connection opened!");
     });
     console.log("Opening connection with id '" + id + "'...");
   }
 
   send(message) {
-    console.log("Sending message:\t" + message);
     var conn = this.peer.connect(this.other);
     conn.on('open', function() {
       conn.send(message);
@@ -97,6 +101,7 @@ class Radio {
     var split = data.split(" ");
     switch (split[0]) {
       case "HELO":
+        this.other_is_connected = true;
         console.log("Connected to " + split[1]);
         break;
       case "SHOT":

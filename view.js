@@ -178,6 +178,7 @@ class View {
 
   start() {
     this.began = true;
+    this.update();
   }
 
   update() {
@@ -198,6 +199,13 @@ class View {
   update_game() {
     this.board_self.update();
     this.board_other.update();
+    var player_info_div = document.getElementById("player-info");
+    if (this.controller.turn) {
+      player_info_div.innerHTML = "It is your turn.";
+    } else {
+      player_info_div.innerHTML = "Waiting for your opponent.";
+    }
+
   }
 
   start_moving(ship) {

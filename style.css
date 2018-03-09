@@ -74,6 +74,15 @@ button {
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
 }
 
+#player-info {
+  display: none;
+  background-color: crimson;
+  color: white;
+  text-transform: uppercase;
+  padding: 8px 20px 8px 20px;
+  border-radius: 4px;
+}
+
 .board {
   padding: 0;
   width: 300px;
