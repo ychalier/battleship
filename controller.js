@@ -29,12 +29,13 @@ class Controller {
   start() {
     if (this.radio.opened_connection) {
       console.log("Game is starting !");
+      /*
       if (this.radio.self_connected_first) {
         this.turn = true;
         console.log("Player " + this.radio.self + " is starting.");
       } else {
         console.log("Player " + this.radio.other + " is starting.");
-      }
+      }*/
       this.model.start();
       this.view.start();
       this.began = true;
@@ -99,6 +100,11 @@ class Controller {
     } else if (winner < 0) {
       this.view.lose();
     }
+  }
+
+  first_turn() {
+    this.turn = true;
+    this.view.update();
   }
 
 }

@@ -103,6 +103,9 @@ class Radio {
     switch (split[0]) {
       case "HELO":
         this.other_is_connected = true;
+        if (this.self_connected_first) {
+          this.controller.first_turn();
+        }
         console.log("Connected to " + split[1]);
         break;
       case "SHOT":
