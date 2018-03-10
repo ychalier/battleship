@@ -34,6 +34,7 @@ class Radio {
         self.self_connected_first = true;
       }
       console.log("Connection opened!");
+      self.controller.start();
     });
     console.log("Opening connection with id '" + id + "'...");
   }

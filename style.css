@@ -1,12 +1,6 @@
 body {
-  font-family: 'PT Sans';
   text-align: center;
-  user-select: none;
-  -ms-user-select: none;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
+  font-family: 'PT Sans';
 }
 
 a:visited {
@@ -17,70 +11,74 @@ footer {
   margin-top: 20px;
 }
 
-input {
-  margin: 0;
-  padding: 4px;
-  width: 100px;
-  font-size: 100%;
-  vertical-align: top;
+#radio-panel {
+  font-size: 0;
+  border-radius: 10px;
+  margin-bottom: 20px;
   display: inline-block;
-  border-radius: 4px 0 0 4px;
-  border: 1px solid darkblue;
+  transition: .2s linear;
+  border: 4px solid #D50000;
+  background-color: #D50000;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
 }
 
-button {
+#radio-panel:hover {
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
+}
+
+#radio-panel > * {
   margin: 0;
-  left: -4px;
   padding: 4px;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: initial;
   color: white;
-  font-size: 100%;
-  cursor: pointer;
-  position: relative;
-  vertical-align: top;
-  display: inline-block;
-  border: 1px solid darkblue;
-  background-color: darkblue;
-  border-radius: 0 4px 4px 0;
 }
 
-#cmd-panel, #game-panel {
+#radio-panel > .id {
+  width: 57px;
+  height: 100%;
+  border: none;
+  color: #D50000;
+  font-size: large;
+  font-weight: bold;
+  background: white;
+  border-radius: 4px;
+  text-align: center;
+  font-family: monospace;
+}
+
+#id-other {
+  margin-left: 20px;
+  margin-right: 0px;
+}
+
+.btn {
+  width: 34px;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.btn:hover {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#game-panel {
   margin: auto;
   display: flex;
   max-width: 700px;
   flex-direction: row;
   justify-content: space-around;
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 #cmd-panel {
   margin-bottom: 20px;
-}
-
-#sub-cmd-panel {
-  margin-top: 20px;
-}
-
-#btn-start {
-  color: white;
-  cursor: pointer;
-  border-radius: 4px;
-  display: inline-block;
-  transition: .1s linear;
-  background-color: crimson;
-  padding: 8px 20px 8px 20px;
-  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
-}
-
-#btn-start:hover {
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
-}
-
-#player-info {
-  color: white;
-  display: none;
-  border-radius: 4px;
-  text-transform: uppercase;
-  background-color: crimson;
-  padding: 8px 20px 8px 20px;
 }
 
 .board {
@@ -107,7 +105,7 @@ button {
 }
 
 .fade:hover{
-  opacity: 1;
+  opacity: .8;
 }
 
 .case {

@@ -7,14 +7,15 @@ class Controller {
 
   init(dimensions, layout) {
     console.log("Initializing controller");
+    this.radio.init(rand_id(4));
     this.model.init(dimensions, layout);
     this.view.init(dimensions);
     this.began = false;
     this.turn = false;
   }
 
-  init_radio(id) {
-    this.radio.init(id);
+  get_radio_id() {
+    return this.radio.self;
   }
 
   connect_radio(id) {
@@ -101,6 +102,16 @@ class Controller {
   }
 
 }
+
+
+function rand_id(len) {
+  var id = "";
+  for (var i = 0; i < len; i++) {
+    id += String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+  }
+  return id;
+}
+
 
 var LAYOUT_TEST = [[1, 1], [3, 1]];
 var LAYOUT_BASIC = [[2, 4], [3, 3], [4, 2], [5, 1]];

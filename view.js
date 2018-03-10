@@ -1,11 +1,11 @@
 var CASE_SIZE = 30;
 var GAME_DIV = "game-panel";
 var SELF_BTN = "btn-selfid";
-var OTHER_BTN = "btn-otherid";
 var START_BTN = "btn-start";
-var PLAYER_DIV = "player-info";
-var SELF_INPUT = "input-selfid";
-var OTHER_INPUT = "input-otherid";
+var RADIO_DIV = "radio-panel";
+var OTHER_INPUT = "id-other";
+var COPY_BTN = "btn-copy";
+var SELF_ID = "id-self";
 
 class ViewCase {
   constructor(board, row, col) {
@@ -153,15 +153,7 @@ class View {
     this.controller = controller;
     this.container = document.getElementById(GAME_DIV);
 
-    document.getElementById(SELF_BTN).addEventListener('click', function(e) {
-      var input = document.getElementById(SELF_INPUT);
-      if (input.value != "") {
-        input.disabled = true;
-        controller.init_radio(input.value);
-      }
-    });
-
-    document.getElementById(OTHER_BTN).addEventListener('click', function(e) {
+    document.getElementById(START_BTN).addEventListener('click', function(e) {
       if (controller.ready()) {
         var input = document.getElementById(OTHER_INPUT);
         if (input.value != "") {
@@ -173,8 +165,10 @@ class View {
       }
     });
 
-    document.getElementById(START_BTN).addEventListener('click', function(e) {
-      controller.start();
+    document.getElementById(COPY_BTN).addEventListener('click', function(e) {
+      document.getElementById(SELF_ID).select();
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
     });
 
   }
@@ -199,12 +193,11 @@ class View {
     }
     this.container.appendChild(this.board_self.el);
     this.container.appendChild(this.board_other.el);
+    document.getElementById(SELF_ID).value = this.controller.get_radio_id();
   }
 
   start() {
     this.began = true;
-    document.getElementById(START_BTN).style.display = "none";
-    document.getElementById(PLAYER_DIV).style.display = "inline-block";
     this.update();
   }
 
@@ -239,21 +232,21 @@ class View {
   update_player() {
     if (this.over) return;
     if (this.controller.turn) {
-      var string = "It is your turn.";
+      var string = "<span>It is your turn.</span>";
     } else {
-      var string = "Waiting for your opponent.";
+      var string = "<span>Waiting for your opponent.</span>";
     }
-    document.getElementById(PLAYER_DIV).innerHTML = string;
+    document.getElementById(RADIO_DIV).innerHTML = string;
   }
 
   win() {
     this.over = true;
-    document.getElementById(PLAYER_DIV).innerHTML = "You win!";
+    document.getElementById(RADIO_DIV).innerHTML = "<span>You win!</span>";
   }
 
   lose() {
     this.over = true;
-    document.getElementById(PLAYER_DIV).innerHTML = "You lose...";
+    document.getElementById(RADIO_DIV).innerHTML = "<span>You lose...</span>";
   }
 
 }

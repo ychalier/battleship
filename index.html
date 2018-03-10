@@ -14,23 +14,21 @@
   <header>
     <h1>battleship</h1>
   </header>
-  <div id="cmd-panel">
-    <div class="group">
-      <input id="input-selfid" type="text" placeholder="own id" />
-      <button id="btn-selfid">set</button>
-    </div>
-    <div class="group">
-      <input id="input-otherid" type="text" placeholder="friend id" />
-      <button id="btn-otherid">set</button>
-    </div>
+
+  <div id="radio-panel">
+    <span id="btn-copy" class="btn">copy</span>
+    <input id="id-self" class="id" type="text" readonly> </span>
+    <input id="id-other" class="id" type="text" placeholder="friend" />
+    <span id="btn-start" class="btn">start</span>
   </div>
+
   <div id="game-panel">
     <p>
       loading game...
     </p>
   </div>
   <div id="sub-cmd-panel">
-    <div id="btn-start">START</div>
+
     <div id="player-info"></div>
   </div>
   <footer>
