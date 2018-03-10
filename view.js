@@ -16,7 +16,9 @@ class ViewCase {
     this.el.className = 'case';
     var self = this;
     this.el.addEventListener('click', function(event) {
-      self.board.handle_click(self.row, self.col);
+      if (!self.board.view.over) {
+        self.board.handle_click(self.row, self.col);
+      }
     });
     set_dimensions(this.el, CASE_SIZE - 2, CASE_SIZE - 2);
     set_position(this.el, CASE_SIZE * this.row, CASE_SIZE * this.col);
@@ -180,6 +182,7 @@ class View {
   init(dimensions) {
     console.log("Initializing view");
     this.began = false;
+    this.over = false;
     this.width = dimensions[0];
     this.height = dimensions[1];
     this.container.innerHTML = "";
@@ -227,12 +230,23 @@ class View {
   }
 
   update_player() {
+    if (this.over) return;
     if (this.controller.turn) {
       var string = "It is your turn.";
     } else {
       var string = "Waiting for your opponent.";
     }
     document.getElementById(PLAYER_DIV).innerHTML = string;
+  }
+
+  win() {
+    this.over = true;
+    document.getElementById(PLAYER_DIV).innerHTML = "You win!";
+  }
+
+  lose() {
+    this.over = true;
+    document.getElementById(PLAYER_DIV).innerHTML = "You lose...";
   }
 
 }

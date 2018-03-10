@@ -17,6 +17,8 @@ class Model {
     // Building ships
     this.ships = [];
     this.nShips = 0;
+    this.ships_down_self = 0;
+    this.ships_down_other = 0;
     for (var k = 0; k < this.layout.length; k++) {
       this.nShips += this.layout[k][1];
     }
@@ -102,6 +104,7 @@ class Model {
       this.grid_other[row][col] = 2;
     }
     if (result.sink) {
+      this.ships_down_other++;
       var shp = new Ship(this, result.size, result.row, result.col, result.dir);
       for (var c = 0; c < shp.surroundings.length; c++) {
         var pos = shp.surroundings[c];
@@ -133,6 +136,7 @@ class Model {
         result.row = this.ships[target].row;
         result.col = this.ships[target].col;
         result.dir = this.ships[target].dir;
+        this.ships_down_self++;
         console.log("A ship is sinking!");
       } else {
         result.sink = false;
@@ -145,6 +149,18 @@ class Model {
     }
 
     return result;
+  }
+
+  check_winner() {
+    if (this.ships_down_other === this.nShips) {
+      console.log("Player wins!");
+      return 1;
+    } else if (this.ships_down_self === this.nShips) {
+      console.log("Player loses!");
+      return -1;
+    } else {
+      return 0;
+    }
   }
 
 }

@@ -57,6 +57,7 @@ class Controller {
       if (!success.success) {
         this.turn = true;
       }
+      this.check_winner();
       this.view.update();
     }
   }
@@ -67,6 +68,7 @@ class Controller {
       if (out.success.success) {
         this.turn = true;
       }
+      this.check_winner();
       this.view.update();
     }
   }
@@ -89,9 +91,19 @@ class Controller {
     }
   }
 
+  check_winner() {
+    var winner = this.model.check_winner();
+    if (winner > 0) {
+      this.view.win();
+    } else if (winner < 0) {
+      this.view.lose();
+    }
+  }
+
 }
 
+var LAYOUT_TEST = [[1, 1], [3, 1]];
 var LAYOUT_BASIC = [[2, 4], [3, 3], [4, 2], [5, 1]];
 var LAYOUT_VARIANT = [[1, 4], [2, 3], [3, 2], [4, 1]];
 var controller = new Controller();
-controller.init([10, 10], LAYOUT_VARIANT);
+controller.init([10, 10], LAYOUT_TEST);
