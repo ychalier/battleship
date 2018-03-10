@@ -11,7 +11,7 @@ class Radio {
 
   init(id) {
     this.self = id;
-    this.peer = new Peer(id, {key: API_KEY, secure: true});
+    this.peer = new Peer(id, {key: API_KEY, secure: false});
     this.opened_connection = false;
     var radio = this;
     this.peer.on('connection', function(conn) {
@@ -105,6 +105,8 @@ class Radio {
         this.other_is_connected = true;
         if (this.self_connected_first) {
           this.controller.first_turn();
+        } else {
+          this.connect(split[1]);
         }
         console.log("Connected to " + split[1]);
         break;
