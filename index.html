@@ -53,20 +53,19 @@
       switch(event.type) {
         case "touchstart":
           type = "dragstart";
-          lastTouchDown = d.getTime();
+          last_touch_down = d.getTime();
           break;
         case "touchmove":
           type="drag";
-          lastTouchDown = -1;
+          last_touch_down = -1;
           break;
         case "touchend":
           if (last_touch_down > -1 && (d.getTime() - last_touch_down) < clickms){
-            lastTouchDown = -1;
+            last_touch_down = -1;
             type="click";
-            break;
+          } else {
+            type="dragend";
           }
-          type="dragend";
-          break;
         default:
           return;
       }
