@@ -106,4 +106,4 @@ var LAYOUT_TEST = [[1, 1], [3, 1]];
 var LAYOUT_BASIC = [[2, 4], [3, 3], [4, 2], [5, 1]];
 var LAYOUT_VARIANT = [[1, 4], [2, 3], [3, 2], [4, 1]];
 var controller = new Controller();
-controller.init([10, 10], LAYOUT_TEST);
+controller.init([10, 10], LAYOUT_VARIANT);
