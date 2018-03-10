@@ -107,27 +107,3 @@ var LAYOUT_BASIC = [[2, 4], [3, 3], [4, 2], [5, 1]];
 var LAYOUT_VARIANT = [[1, 4], [2, 3], [3, 2], [4, 1]];
 var controller = new Controller();
 controller.init([10, 10], LAYOUT_VARIANT);
-
-
-function touchHandler(event) {
-    var touch = event.changedTouches[0];
-
-    var simulatedEvent = document.createEvent("MouseEvent");
-        simulatedEvent.initMouseEvent({
-        touchstart: "dragstart",
-        touchmove: "drag",
-        touchend: "dragover"
-    }[event.type], true, true, window, 1,
-        touch.screenX, touch.screenY,
-        touch.clientX, touch.clientY, false,
-        false, false, false, 0, null);
-
-    touch.target.dispatchEvent(simulatedEvent);
-    event.preventDefault();
-}
-
-
-document.addEventListener("touchstart", touchHandler, true);
-document.addEventListener("touchmove", touchHandler, true);
-document.addEventListener("touchend", touchHandler, true);
-document.addEventListener("touchcancel", touchHandler, true);

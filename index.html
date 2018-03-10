@@ -39,9 +39,55 @@
     &copy; 2018 <a href="http://yohan.chalier.fr/">Yohan Chalier</a>
   </footer>
 
-  <!--<script src="jquery-1.7.2.min.js"></script>
-  <script src="jquery-ui.min.js"></script>
-  <script src="jquery.ui.touch-punch.min.js"></script>-->
+  <script type="text/javascript">
+
+    var clickms = 100;
+    var last_touch_down = -1;
+
+    function touchHandler(event) {
+      var touch = event.changedTouches[0];
+      var simulatedEvent = document.createEvent("MouseEvent");
+
+      var d = new Date();
+      var type = "";
+      switch(event.type) {
+        case "touchstart":
+          type = "dragstart";
+          lastTouchDown = d.getTime();
+          break;
+        case "touchmove":
+          type="drag";
+          lastTouchDown = -1;
+          break;
+        case "touchend":
+          if (last_touch_down > -1 && (d.getTime() - last_touch_down) < clickms){
+            lastTouchDown = -1;
+            type="click";
+            break;
+          }
+          type="dragend";
+          break;
+        default:
+          return;
+      }
+
+      simulatedEvent.initMouseEvent(type, true, true, window, 1,
+          touch.screenX, touch.screenY,
+          touch.clientX, touch.clientY, false,
+          false, false, false, 0, null);
+
+      touch.target.dispatchEvent(simulatedEvent);
+      event.preventDefault();
+    }
+
+    document.addEventListener("touchstart", touchHandler, true);
+    document.addEventListener("touchmove", touchHandler, true);
+    document.addEventListener("touchend", touchHandler, true);
+    document.addEventListener("touchcancel", touchHandler, true);
+
+  </script>
+
+
   <script src="peer.js"></script>
   <script src="ship.js" type="text/javascript"></script>
   <script src="model.js" type="text/javascript"></script>
