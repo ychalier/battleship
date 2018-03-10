@@ -5,19 +5,29 @@ class Controller {
     this.radio = new Radio(this);
   }
 
-  init(dimensions, ships_settings) {
+  init(dimensions, layout) {
     console.log("Initializing controller");
-    this.model.init(dimensions, ships_settings);
+    this.model.init(dimensions, layout);
     this.view.init(dimensions);
     this.began = false;
-    this.turn = false;  // true if it is client's turn
+    this.turn = false;
+  }
+
+  init_radio(id) {
+    this.radio.init(id);
+  }
+
+  connect_radio(id) {
+    this.radio.connect(id);
+  }
+
+  ready() {
+    return this.radio.ready();
   }
 
   start() {
     if (this.radio.opened_connection) {
       console.log("Game is starting !");
-      document.getElementById("btn-start").style.display = "none";
-      document.getElementById("player-info").style.display = "inline-block";
       if (this.radio.self_connected_first) {
         this.turn = true;
         console.log("Player " + this.radio.self + " is starting.");
@@ -33,17 +43,17 @@ class Controller {
   }
 
   handle_click(row, col) {
-    if (!this.turn || !this.began || !this.model.can_shoot(row, col))
+    if (!this.turn || !this.began || !this.model.clear(row, col))
       return false;
     this.turn = false;
     this.radio.shoot(row, col);
     return true;
   }
 
-  handle_shot(rowCol) {
+  handle_shot(pos) {
     if (this.began && !this.turn) {
-      var success = this.model.handle_shot(rowCol.row, rowCol.col);
-      this.radio.answer(rowCol.row, rowCol.col, success);
+      var success = this.model.handle_shot(pos.row, pos.col);
+      this.radio.answer(pos.row, pos.col, success);
       if (!success.success) {
         this.turn = true;
       }
@@ -51,38 +61,37 @@ class Controller {
     }
   }
 
-  handle_shot_results(out) {
+  handle_result(out) {
     if (this.began) {
-      this.model.send_shot_results(out.row, out.col, out.success);
+      this.model.handle_result(out.row, out.col, out.success);
       if (out.success.success) {
         this.turn = true;
       }
       this.view.update();
     }
   }
+
+  get_ships() {
+    return this.model.ships;
+  }
+
+  get_grid_self() {
+    return this.model.grid_self;
+  }
+
+  get_grid_other() {
+    return this.model.grid_other;
+  }
+
+  move(index, row, col, dir) {
+    if (this.model.move(index, row, col, dir)) {
+      this.view.update();
+    }
+  }
+
 }
 
+var LAYOUT_BASIC = [[2, 4], [3, 3], [4, 2], [5, 1]];
+var LAYOUT_VARIANT = [[1, 4], [2, 3], [3, 2], [4, 1]];
 var controller = new Controller();
-controller.init([10, 10], SHIPS_SETTINGS_VARIANT);
-
-document.getElementById("btn-selfid").addEventListener('click', function(e) {
-  if (document.getElementById("input-selfid").value != "") {
-    document.getElementById("input-selfid").disabled = true;
-    controller.radio.init(document.getElementById("input-selfid").value);
-  }
-});
-
-document.getElementById("btn-otherid").addEventListener('click', function(e) {
-  if (controller.radio.ready()) {
-    if (document.getElementById("input-otherid").value != "") {
-      document.getElementById("input-otherid").disabled = true;
-      controller.radio.connect(document.getElementById("input-otherid").value);
-    }
-  } else {
-    alert('You must set your own id before doing that!');
-  }
-});
-
-document.getElementById("btn-start").addEventListener('click', function(e) {
-  controller.start();
-});
+controller.init([10, 10], LAYOUT_VARIANT);

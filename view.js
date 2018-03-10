@@ -1,94 +1,86 @@
 var CASE_SIZE = 30;
+var GAME_DIV = "game-panel";
+var SELF_BTN = "btn-selfid";
+var OTHER_BTN = "btn-otherid";
+var START_BTN = "btn-start";
+var PLAYER_DIV = "player-info";
+var SELF_INPUT = "input-selfid";
+var OTHER_INPUT = "input-otherid";
 
 class ViewCase {
   constructor(board, row, col) {
     this.board = board;
     this.row = row;
     this.col = col;
-    this.el = document.createElement("div");
-    this.el.className = "case";
+    this.el = document.createElement('div');
+    this.el.className = 'case';
     var self = this;
     this.el.addEventListener('click', function(event) {
       self.board.handle_click(self.row, self.col);
     });
-    this.el.style.width = (CASE_SIZE - 2) + "px";
-    this.el.style.height = (CASE_SIZE - 2) + "px";
-    this.el.style.top = (CASE_SIZE * this.row) + "px";
-    this.el.style.left = (CASE_SIZE * this.col) + "px";
+    set_dimensions(this.el, CASE_SIZE - 2, CASE_SIZE - 2);
+    set_position(this.el, CASE_SIZE * this.row, CASE_SIZE * this.col);
   }
 
   update(model) {
     switch (model[this.row][this.col]) {
       case 0:
-        this.el.innerHTML = "";
-        this.el.className = "case";
+        this.el.innerHTML = '';
+        this.el.className = 'case';
         break;
       case 1:
-        this.el.innerHTML = "•";
-        this.el.className = "case miss";
+        this.el.innerHTML = '•';
+        this.el.className = 'case miss';
         break;
       case 2:
-        this.el.innerHTML = "•";
-        this.el.className = "case hit";
+        this.el.innerHTML = '•';
+        this.el.className = 'case hit';
         break;
     }
   }
 
 }
 
+
 class ViewShip {
   constructor(view, index) {
+    var self = this;
+
     this.view = view;
     this.index = index;
-    this.el = document.createElement("div");
-    this.el.className = "ship";
-    this.sub_div = document.createElement("div");
+    this.el = document.createElement('div');
+    this.el.className = 'ship';
+    this.el.draggable = 'true';
+
+    this.el.addEventListener('drag', function(event) {
+      var row = self.view.board_self.get_row(event);
+      var col = self.view.board_self.get_col(event);
+      var m = self.model();
+      if (row != m.row || col != m.col) {
+        self.view.controller.move(self.index, row, col, m.dir);
+      }
+    });
+
+    this.el.addEventListener('click', function(event) {
+      var m = self.model();
+      self.view.controller.move(self.index, m.row, m.col, 1 - m.dir);
+    });
+
     this.update();
-    this.el.appendChild(this.sub_div);
-    this.el.draggable = "true";
-    var self = this;
-    this.el.addEventListener("dragstart", function(event) {
-      event.dataTransfer.setDragImage(document.createElement('div'), 0, 0);
-      event.dataTransfer.ship = self;
-      self.view.current_ship_drag = self;
-    });
-    this.el.addEventListener("drag", function(event) {
-      var row = self.view.board_self.getRow(event);
-      var col = self.view.board_self.getCol(event);
-      var model = self.model();
-      if (row != model.row || col != model.col) {
-        var success =
-          self.view.controller.model.move_ship(self.index, row, col, model.dir);
-        if (success) {
-          self.view.update();
-        }
-      }
-    });
-    this.el.addEventListener("click", function(event) {
-      var model = self.model();
-      var success = self.view.controller.model.move_ship(
-        self.index, model.row, model.col, 1 - model.dir);
-      if (success) {
-        self.view.update();
-      }
-    });
   }
 
   model() {
-    return this.view.controller.model.ships[this.index];
+    return this.view.controller.get_ships()[this.index];
   }
 
   update() {
     var model = this.model();
     if (model.dir === 1) {
-      this.el.style.width = (CASE_SIZE - 2) + "px";
-      this.el.style.height = (model.size * CASE_SIZE - 2) + "px";
+      set_dimensions(this.el, CASE_SIZE - 2, model.size * CASE_SIZE - 2);
     } else {
-      this.el.style.width = (model.size * CASE_SIZE - 2) + "px";
-      this.el.style.height = (CASE_SIZE - 2) + "px";
+      set_dimensions(this.el, model.size * CASE_SIZE - 2, CASE_SIZE - 2);
     }
-    this.el.style.top = (model.row * CASE_SIZE) + "px";
-    this.el.style.left = (model.col * CASE_SIZE) + "px";
+    set_position(this.el, CASE_SIZE * model.row, CASE_SIZE * model.col);
   }
 }
 
@@ -102,29 +94,36 @@ class ViewBoard {
 
   init() {
     this.cases = [];
+
     for (var row = 0; row < this.view.height; row++) {
       for (var col = 0; col < this.view.width; col++) {
         this.cases.push(new ViewCase(this, row, col));
       }
     }
+
     this.el = document.createElement('div');
-    this.el.className = "board";
+    this.el.className = 'board';
+    set_dimensions(this.el,
+      CASE_SIZE * this.view.width,
+      CASE_SIZE * this.view.height);
+
+    this.el.addEventListener('dragover', function(event) {
+      event.preventDefault();
+    });
+    this.el.addEventListener('dragenter', function(event) {
+      event.preventDefault();
+    });
+
     for (var c = 0; c < this.cases.length; c++) {
 	    this.el.appendChild(this.cases[c].el);
     }
-    this.el.addEventListener("dragover", function(event) {
-      event.preventDefault();
-    });
-    this.el.addEventListener("dragenter", function(event) {
-      event.preventDefault();
-    });
   }
 
-  getCol(event) {
+  get_col(event) {
     return Math.floor((event.pageX - this.el.offsetLeft) / CASE_SIZE);
   }
 
-  getRow(event) {
+  get_row(event) {
     return Math.floor((event.pageY - this.el.offsetTop) / CASE_SIZE);
   }
 
@@ -137,9 +136,9 @@ class ViewBoard {
   update() {
     for (var c = 0; c < this.cases.length; c++) {
       if (this.type === 0) {
-        this.cases[c].update(this.view.controller.model.grid_self);
+        this.cases[c].update(this.view.controller.get_grid_self());
       } else if (this.type === 1) {
-        this.cases[c].update(this.view.controller.model.grid_other);
+        this.cases[c].update(this.view.controller.get_grid_other());
       }
     }
   }
@@ -150,7 +149,32 @@ class ViewBoard {
 class View {
   constructor(controller) {
     this.controller = controller;
-    this.container = document.getElementById("game-panel");
+    this.container = document.getElementById(GAME_DIV);
+
+    document.getElementById(SELF_BTN).addEventListener('click', function(e) {
+      var input = document.getElementById(SELF_INPUT);
+      if (input.value != "") {
+        input.disabled = true;
+        controller.init_radio(input.value);
+      }
+    });
+
+    document.getElementById(OTHER_BTN).addEventListener('click', function(e) {
+      if (controller.ready()) {
+        var input = document.getElementById(OTHER_INPUT);
+        if (input.value != "") {
+          input.disabled = true;
+          controller.connect_radio(input.value);
+        }
+      } else {
+        alert('You must set your own id before doing that!');
+      }
+    });
+
+    document.getElementById(START_BTN).addEventListener('click', function(e) {
+      controller.start();
+    });
+
   }
 
   init(dimensions) {
@@ -163,53 +187,69 @@ class View {
     this.board_other = new ViewBoard(this, 1);
 
     this.ships = [];
-    for (var s = 0; s < this.controller.model.ships.length; s++) {
+    for (var s = 0; s < this.controller.get_ships().length; s++) {
       this.ships.push(new ViewShip(this, s));
     }
 
-    // pre-game
     for (var s = 0; s < this.ships.length; s++) {
       this.board_self.el.appendChild(this.ships[s].el);
     }
     this.container.appendChild(this.board_self.el);
     this.container.appendChild(this.board_other.el);
-
   }
 
   start() {
     this.began = true;
+    document.getElementById(START_BTN).style.display = "none";
+    document.getElementById(PLAYER_DIV).style.display = "inline-block";
     this.update();
   }
 
   update() {
     console.log("Updating view");
     if (!this.began) {
-      this.update_pregame();
+      this.update_ships();
     } else {
-      this.update_game();
+      this.update_boards();
+      this.update_player();
     }
   }
 
-  update_pregame() {
+  update_ships() {
     for (var s = 0; s < this.ships.length; s++) {
       this.ships[s].update();
     }
   }
 
-  update_game() {
+  update_boards() {
     this.board_self.update();
     this.board_other.update();
-    var player_info_div = document.getElementById("player-info");
+  }
+
+  update_player() {
     if (this.controller.turn) {
-      player_info_div.innerHTML = "It is your turn.";
+      var string = "It is your turn.";
     } else {
-      player_info_div.innerHTML = "Waiting for your opponent.";
+      var string = "Waiting for your opponent.";
     }
-
+    document.getElementById(PLAYER_DIV).innerHTML = string;
   }
 
-  start_moving(ship) {
+}
 
-  }
 
+function px(value) {
+  return value + "px";
+}
+
+
+function set_dimensions(element, width, height) {
+  element.style.width = px(width);
+  element.style.height = px(height);
+}
+
+
+function set_position(element, top, left) {
+  element.style.top = px(top);
+  element.style.left = px(left);
 }

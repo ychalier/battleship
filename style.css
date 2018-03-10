@@ -1,6 +1,6 @@
 body {
-  text-align: center;
   font-family: 'PT Sans';
+  text-align: center;
   user-select: none;
   -ms-user-select: none;
   -moz-user-select: none;
@@ -75,19 +75,17 @@ button {
 }
 
 #player-info {
-  display: none;
-  background-color: crimson;
   color: white;
-  text-transform: uppercase;
-  padding: 8px 20px 8px 20px;
+  display: none;
   border-radius: 4px;
+  text-transform: uppercase;
+  background-color: crimson;
+  padding: 8px 20px 8px 20px;
 }
 
 .board {
   padding: 0;
-  width: 300px;
   margin: auto;
-  height: 300px;
   position: relative;
   border: 1px solid grey;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, .3);

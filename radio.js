@@ -108,12 +108,11 @@ class Radio {
         this.controller.handle_shot(this.read_shot(data));
         break;
       case "RESU":
-        this.controller.handle_shot_results(this.read_answer(data));
+        this.controller.handle_result(this.read_answer(data));
         break;
       default:
-        console.log("-----BEGIN RECEIVED DATA-----\n"
-                  + data
-                  + "\n-----END RECEIVED DATA-----");
+        console.log("-----BEGIN RECEIVED DATA-----\n" + data
+          + "\n-----END RECEIVED DATA-----");
 
     }
   }
