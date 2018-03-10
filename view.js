@@ -227,6 +227,13 @@ class View {
   update_boards() {
     this.board_self.update();
     this.board_other.update();
+    if (this.controller.turn) {
+      this.board_self.el.className = 'board fade';
+      this.board_other.el.className = 'board';
+    } else {
+      this.board_self.el.className = 'board';
+      this.board_other.el.className = 'board fade';
+    }
   }
 
   update_player() {

@@ -101,6 +101,15 @@ button {
   }
 }
 
+.fade {
+  opacity: .5;
+  transition: .2s linear;
+}
+
+.fade:hover{
+  opacity: 1;
+}
+
 .case {
   font-size: 1.6em;
   line-height: 100%;
