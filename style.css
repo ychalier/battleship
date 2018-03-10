@@ -111,6 +111,7 @@ footer {
 .case {
   font-size: 1.6em;
   line-height: 100%;
+  touch-action: none;
   position: absolute;
   border: 1px solid lightgrey;
 }
@@ -124,6 +125,7 @@ footer {
 }
 
 .ship {
+  touch-action: none;
   position: absolute;
   transition: .2s ease;
   border: 1px solid darkblue;

@@ -63,7 +63,21 @@ class Model {
         }
       }
     }
+    this.shuffle_ships();
     return true;
+  }
+
+  shuffle_ships() {
+    var randint = function(min, max) {
+      return Math.floor(Math.random() * (1 + max - min)) + min;
+    }
+
+    var max_attemps = 50;
+    for (var s = 0; s < this.ships.length; s++) {
+      for (var i = 0; i < max_attemps; i++) {
+        this.move(s, randint(0, 9), randint(0, 9), randint(0, 1));
+      }
+    }
   }
 
   fits(ship) {
