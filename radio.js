@@ -11,7 +11,7 @@ class Radio {
 
   init(id) {
     this.self = id;
-    this.peer = new Peer(id, {key: API_KEY});
+    this.peer = new Peer(id, {key: API_KEY, secure: true});
     this.opened_connection = false;
     var radio = this;
     this.peer.on('connection', function(conn) {
