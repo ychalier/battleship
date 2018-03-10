@@ -114,9 +114,9 @@ function touchHandler(event) {
 
     var simulatedEvent = document.createEvent("MouseEvent");
         simulatedEvent.initMouseEvent({
-        touchstart: "mousedown",
-        touchmove: "mousemove",
-        touchend: "mouseup"
+        touchstart: "dragstart",
+        touchmove: "drag",
+        touchend: "dragover"
     }[event.type], true, true, window, 1,
         touch.screenX, touch.screenY,
         touch.clientX, touch.clientY, false,
