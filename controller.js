@@ -8,10 +8,18 @@ class Controller {
   init(dimensions, layout) {
     console.log("Initializing controller");
     this.radio.init(rand_id(4));
+    document.getElementById("invite-link").href =
+      window.location.href.substring(0, window.location.href.indexOf("?"))
+      + "?id="
+      + this.radio.self;
     this.model.init(dimensions, layout);
     this.view.init(dimensions);
     this.began = false;
     this.turn = false;
+    var other_id = getParameterByName("id");
+    if (other_id) {
+      document.getElementById(OTHER_INPUT).value = other_id;
+    }
   }
 
   get_radio_id() {
@@ -114,6 +122,17 @@ function rand_id(len) {
     id += String.fromCharCode(Math.floor(Math.random() * 26) + 97);
   }
   return id;
+}
+
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 
