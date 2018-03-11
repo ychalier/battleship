@@ -8,11 +8,22 @@ class Radio {
     this.opened_connection = false;
     this.other_is_connected = false;
     this.self_connected_first = false;
-    this.retrieve_ice();
+    // this.retrieve_ice();
   }
 
   init(id) {
     this.self = id;
+    this.peer = new Peer(id, {key: API_KEY, secure: false});
+    this.opened_connection = false;
+    var radio = this;
+    this.peer.on('connection', function(conn) {
+      conn.on('data', function(data){
+        radio.handle(data);
+      });
+    });
+    this.peer_created = true;
+    console.log("Initializing peer with id '" + id + "'");
+    /*
     if (ICE) {
       this.peer = new Peer(id, {key: API_KEY, secure: false,
         config: {'iceServers': ICE.v.iceServers}});
@@ -26,6 +37,7 @@ class Radio {
       this.peer_created = true;
       console.log("Initializing peer with id '" + id + "'");
     }
+    */
   }
 
   retrieve_ice() {
