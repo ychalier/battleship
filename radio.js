@@ -1,4 +1,5 @@
 var API_KEY = "hnrdj02nxhto6r";
+var ICE = null;
 
 class Radio {
   constructor(controller) {
@@ -7,20 +8,40 @@ class Radio {
     this.opened_connection = false;
     this.other_is_connected = false;
     this.self_connected_first = false;
+    this.retrieve_ice();
   }
 
   init(id) {
     this.self = id;
-    this.peer = new Peer(id, {key: API_KEY, secure: false});
-    this.opened_connection = false;
-    var radio = this;
-    this.peer.on('connection', function(conn) {
-      conn.on('data', function(data){
-        radio.handle(data);
+    if (ICE) {
+      this.peer = new Peer(id, {key: API_KEY, secure: false,
+        config: {'iceServers': ICE.v.iceServers}});
+      this.opened_connection = false;
+      var radio = this;
+      this.peer.on('connection', function(conn) {
+        conn.on('data', function(data){
+          radio.handle(data);
+        });
       });
-    });
-    this.peer_created = true;
-    console.log("Initializing peer with id '" + id + "'");
+      this.peer_created = true;
+      console.log("Initializing peer with id '" + id + "'");
+    }
+  }
+
+  retrieve_ice() {
+    var xhr = new XMLHttpRequest();
+    var self = this;
+    xhr.onreadystatechange = function(event){
+      if(xhr.readyState == 4 && xhr.status == 200){
+        ICE = JSON.parse(xhr.responseText);
+        console.log('ICE url: ', ICE);
+        self.init(self.self);
+      }
+    }
+    xhr.open("PUT", "https://ws.xirsys.com/_turn/Battleship/", true);
+    xhr.setRequestHeader ("Authorization", "Basic "
+      + btoa("devyss:f8c57884-2526-11e8-8abe-9a0532c07c01") );
+    xhr.send();
   }
 
   connect(id) {
