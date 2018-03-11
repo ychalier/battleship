@@ -6,6 +6,7 @@ var RADIO_DIV = "radio-panel";
 var OTHER_INPUT = "id-other";
 var COPY_BTN = "btn-copy";
 var SELF_ID = "id-self";
+var PREGAME = "pregame-panel";
 
 class ViewCase {
   constructor(board, row, col) {
@@ -119,6 +120,7 @@ class ViewBoard {
     for (var c = 0; c < this.cases.length; c++) {
 	    this.el.appendChild(this.cases[c].el);
     }
+
   }
 
   get_col(event) {
@@ -143,6 +145,12 @@ class ViewBoard {
         this.cases[c].update(this.view.controller.get_grid_other());
       }
     }
+
+    if (this.type === 1) {
+      set_position(
+        document.getElementById(PREGAME), this.offsetTop, this.offsetLeft);
+    }
+
   }
 
 }
@@ -194,6 +202,13 @@ class View {
     this.container.appendChild(this.board_self.el);
     this.container.appendChild(this.board_other.el);
     document.getElementById(SELF_ID).value = this.controller.get_radio_id();
+
+    var pregame = document.getElementById(PREGAME);
+    document.getElementsByTagName('body')[0].removeChild(pregame);
+    this.board_other.el.appendChild(pregame);
+    set_dimensions(pregame, CASE_SIZE * this.width, CASE_SIZE * this.height);
+    set_position(pregame, 0, 0);
+
   }
 
   start() {
@@ -267,3 +282,49 @@ function set_position(element, top, left) {
   element.style.top = px(top);
   element.style.left = px(left);
 }
+
+
+var clickms = 100;
+var last_touch_down = -1;
+
+
+function touchHandler(event) {
+  var touch = event.changedTouches[0];
+  var simulatedEvent = document.createEvent("MouseEvent");
+
+  var d = new Date();
+  var type = "";
+  switch(event.type) {
+    case "touchstart":
+      type = "dragstart";
+      last_touch_down = d.getTime();
+      break;
+    case "touchmove":
+      type="drag";
+      last_touch_down = -1;
+      break;
+    case "touchend":
+      if (last_touch_down > -1 && (d.getTime() - last_touch_down) < clickms){
+        last_touch_down = -1;
+        type="click";
+      } else {
+        type="dragend";
+      }
+    default:
+      return;
+  }
+
+  simulatedEvent.initMouseEvent(type, true, true, window, 1,
+      touch.screenX, touch.screenY,
+      touch.clientX, touch.clientY, false,
+      false, false, false, 0, null);
+
+  touch.target.dispatchEvent(simulatedEvent);
+  event.preventDefault();
+}
+
+
+document.addEventListener("touchstart", touchHandler, true);
+document.addEventListener("touchmove", touchHandler, true);
+document.addEventListener("touchend", touchHandler, true);
+document.addEventListener("touchcancel", touchHandler, true);
