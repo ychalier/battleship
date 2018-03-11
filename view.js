@@ -213,6 +213,7 @@ class View {
 
   start() {
     this.began = true;
+    document.getElementById(PREGAME).style.display = "none";
     this.update();
   }
 

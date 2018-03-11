@@ -28,11 +28,11 @@ footer {
 
 #radio-panel > * {
   margin: 0;
-  padding: 4px 8px 4px 8px;
+  color: white;
+  font-size: initial;
   display: inline-block;
   vertical-align: middle;
-  font-size: initial;
-  color: white;
+  padding: 4px 8px 4px 8px;
 }
 
 #radio-panel > .id {
@@ -78,7 +78,8 @@ footer {
 }
 
 #pregame-panel {
-  z-index: 1;
+  position: absolute;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -132,7 +133,7 @@ footer {
 }
 
 .case {
-  z-index: -1;
+  z-index: 1;
   font-size: 1.6em;
   line-height: 100%;
   touch-action: none;
@@ -149,6 +150,7 @@ footer {
 }
 
 .ship {
+  z-index: 2;
   touch-action: none;
   position: absolute;
   transition: .2s ease;

@@ -29,13 +29,6 @@ class Controller {
   start() {
     if (this.radio.opened_connection) {
       console.log("Game is starting !");
-      /*
-      if (this.radio.self_connected_first) {
-        this.turn = true;
-        console.log("Player " + this.radio.self + " is starting.");
-      } else {
-        console.log("Player " + this.radio.other + " is starting.");
-      }*/
       this.model.start();
       this.view.start();
       this.began = true;
@@ -58,6 +51,8 @@ class Controller {
       this.radio.answer(pos.row, pos.col, success);
       if (!success.success) {
         this.turn = true;
+      } else if ("vibrate" in navigator) {
+        navigator.vibrate(500);
       }
       this.check_winner();
       this.view.update();
@@ -69,6 +64,9 @@ class Controller {
       this.model.handle_result(out.row, out.col, out.success);
       if (out.success.success) {
         this.turn = true;
+        if ("vibrate" in navigator) {
+          navigator.vibrate(500);
+        }
       }
       this.check_winner();
       this.view.update();
