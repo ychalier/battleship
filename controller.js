@@ -52,7 +52,7 @@ class Controller {
       if (!success.success) {
         this.turn = true;
       } else if ("vibrate" in navigator) {
-        navigator.vibrate(500);
+        navigator.vibrate(100);
       }
       this.check_winner();
       this.view.update();
@@ -65,7 +65,7 @@ class Controller {
       if (out.success.success) {
         this.turn = true;
         if ("vibrate" in navigator) {
-          navigator.vibrate(500);
+          navigator.vibrate(100);
         }
       }
       this.check_winner();
